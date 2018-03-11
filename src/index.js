@@ -3,17 +3,27 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
+  const style = props.squareIsWinner ? {fontWeight: 'bold'} : {};
   return (
-    <button className="square" onClick={props.onClick}>
+    <button style={style} className="square" onClick={props.onClick}>
       {props.value}
     </button>
   );
 }
 
 class Board extends React.Component {
+  isSquareWinner(winningIndices, i) {
+    if (winningIndices) {
+      return this.props.winningIndices.includes(i)
+    }
+
+    return false;
+  }
+
   renderSquare(i) {
     return (<Square
       key={i}
+      squareIsWinner={this.isSquareWinner(this.props.winningIndices, i)}
       value={this.props.squares[i]}
       onClick={() => this.props.onClick(i)} />);
   }
@@ -80,7 +90,7 @@ class Game extends React.Component {
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        return squares[a];
+        return lines[i];
       }
     }
     return null;
@@ -119,7 +129,7 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = this.calculateWinner(current.squares);
+    const winningIndices = this.calculateWinner(current.squares);
 
     const moveHistoryList = history.map((currentValue, index) => {
       const desc = index ?
@@ -135,8 +145,8 @@ class Game extends React.Component {
     });
 
     let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
+    if (winningIndices) {
+      status = 'Winner: ' + current.squares[winningIndices[0]];
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -145,6 +155,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
+            winningIndices={winningIndices}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
