@@ -86,9 +86,10 @@ class Game extends React.Component {
         'Go to index #' + index :
         'Go to game start';
       const player = (index % 2) ? 'O' : 'X';
+      const style = this.state.stepNumber === index ? {fontWeight: 'bold'} : {};
       return (
         <li key={index}>
-          <button onClick={() => this.jumpTo(index)}>{desc} {player}</button>
+          <button style={style} onClick={() => this.jumpTo(index)}>{desc} {player}</button>
         </li>
       );
     });
