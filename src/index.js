@@ -147,6 +147,8 @@ class Game extends React.Component {
     let status;
     if (winningIndices) {
       status = 'Winner: ' + current.squares[winningIndices[0]];
+    } else if (!current.squares.includes(null)) {
+      status = 'Draw';
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
