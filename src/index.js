@@ -46,6 +46,12 @@ class Board extends React.Component {
   }
 }
 
+function OrderButton(props) {
+  return (
+    <button className="orderToggle" onClick={props.onClick}>Toggle list order</button>
+  );
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -55,6 +61,7 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
+      orderIsAscending: true,
     };
   }
 
@@ -79,6 +86,12 @@ class Game extends React.Component {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
+    });
+  }
+
+  handleOrderButtonClick() {
+    this.setState({
+      orderIsAscending: !this.state.orderIsAscending,
     });
   }
 
@@ -116,7 +129,8 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moveHistoryList}</ol>
+          <OrderButton onClick={() => this.handleOrderButtonClick()} />
+          <ol>{this.state.orderIsAscending ? moveHistoryList : moveHistoryList.reverse()}</ol>
         </div>
       </div>
     );
