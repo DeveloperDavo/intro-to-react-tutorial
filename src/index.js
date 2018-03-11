@@ -62,6 +62,18 @@ function OrderButton(props) {
   );
 }
 
+class GameInfo extends React.Component {
+  render() {
+    return (
+      <div className="game-info">
+        <div>{this.props.status}</div>
+        <OrderButton onClick={() => this.props.onClick()} />
+        <ol>{this.props.moveHistoryList}</ol>
+      </div>
+    );
+  }
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -163,11 +175,11 @@ class Game extends React.Component {
             onClick={(i) => this.handleClick(i)}
           />
         </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <OrderButton onClick={() => this.handleOrderButtonClick()} />
-          <ol>{this.state.orderIsAscending ? moveHistoryList : moveHistoryList.reverse()}</ol>
-        </div>
+        <GameInfo
+          status={status}
+          moveHistoryList={this.state.orderIsAscending ? moveHistoryList : moveHistoryList.reverse()}
+          onClick={() => this.handleOrderButtonClick()}
+        />
       </div>
     );
   }
