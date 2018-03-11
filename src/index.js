@@ -63,12 +63,45 @@ function OrderButton(props) {
 }
 
 class GameInfo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      orderIsAscending: true,
+    };
+  }
+
+  handleClick() {
+    this.setState({
+      orderIsAscending: !this.state.orderIsAscending,
+    });
+  }
+
   render() {
+    let status;
+    if (this.props.winningIndices) {
+      status = 'Winner: ' + this.props.squares[this.props.winningIndices[0]];
+    } else if (!this.props.squares.includes(null)) {
+      status = 'Draw';
+    } else {
+      status = 'Next player: ' + (this.props.xIsNext ? 'X' : 'O');
+    }
+
+    const moveHistoryList = this.props.history.map((currentValue, index) => {
+      const desc = index ? `Go to index #${index} (${currentValue.col}, ${currentValue.row})` : 'Go to game start';
+      const player = (index % 2) ? 'O' : 'X';
+      const style = this.props.stepNumber === index ? {fontWeight: 'bold'} : {};
+      return (
+        <li key={index}>
+          <button style={style} onClick={() => this.props.onClick(index)}>{desc} {player}</button>
+        </li>
+      );
+    });
+
     return (
       <div className="game-info">
-        <div>{this.props.status}</div>
-        <OrderButton onClick={() => this.props.onClick()} />
-        <ol>{this.props.moveHistoryList}</ol>
+        <div>{status}</div>
+        <OrderButton onClick={() => this.handleClick()} />
+        <ol>{this.state.orderIsAscending ? moveHistoryList : moveHistoryList.reverse()}</ol>
       </div>
     );
   }
@@ -83,8 +116,14 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
-      orderIsAscending: true,
     };
+  }
+
+  jumpTo(step) {
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) === 0,
+    });
   }
 
   calculateWinner(squares) {
@@ -129,43 +168,11 @@ class Game extends React.Component {
     });
   }
 
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
-    });
-  }
-
-  handleOrderButtonClick() {
-    this.setState({
-      orderIsAscending: !this.state.orderIsAscending,
-    });
-  }
-
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winningIndices = this.calculateWinner(current.squares);
 
-    const moveHistoryList = history.map((currentValue, index) => {
-      const desc = index ? `Go to index #${index} (${currentValue.col}, ${currentValue.row})` : 'Go to game start';
-      const player = (index % 2) ? 'O' : 'X';
-      const style = this.state.stepNumber === index ? {fontWeight: 'bold'} : {};
-      return (
-        <li key={index}>
-          <button style={style} onClick={() => this.jumpTo(index)}>{desc} {player}</button>
-        </li>
-      );
-    });
-
-    let status;
-    if (winningIndices) {
-      status = 'Winner: ' + current.squares[winningIndices[0]];
-    } else if (!current.squares.includes(null)) {
-      status = 'Draw';
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
     return (
       <div className="game">
         <div className="game-board">
@@ -176,9 +183,12 @@ class Game extends React.Component {
           />
         </div>
         <GameInfo
-          status={status}
-          moveHistoryList={this.state.orderIsAscending ? moveHistoryList : moveHistoryList.reverse()}
-          onClick={() => this.handleOrderButtonClick()}
+          stepNumber={this.state.stepNumber}
+          xIsNext={this.state.xIsNext}
+          history={history}
+          squares={current.squares}
+          winningIndices={winningIndices}
+          onClick={(movesIndex) => this.jumpTo(movesIndex)}
         />
       </div>
     );
