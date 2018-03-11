@@ -104,9 +104,13 @@ class Game extends React.Component {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    const row = Math.floor(i / 3) + 1;
+    const col = i % 3 + 1;
     this.setState({
       history: history.concat([{
         squares: squares,
+        row: row,
+        col: col,
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext
@@ -132,9 +136,7 @@ class Game extends React.Component {
     const winningIndices = this.calculateWinner(current.squares);
 
     const moveHistoryList = history.map((currentValue, index) => {
-      const desc = index ?
-        'Go to index #' + index :
-        'Go to game start';
+      const desc = index ? `Go to index #${index} (${currentValue.col}, ${currentValue.row})` : 'Go to game start';
       const player = (index % 2) ? 'O' : 'X';
       const style = this.state.stepNumber === index ? {fontWeight: 'bold'} : {};
       return (
