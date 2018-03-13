@@ -68,6 +68,7 @@ class GameInfo extends React.Component {
     this.state = {
       orderIsAscending: true,
     };
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
@@ -100,7 +101,7 @@ class GameInfo extends React.Component {
     return (
       <div className="game-info">
         <div>{status}</div>
-        <OrderButton onClick={() => this.handleClick()} />
+        <OrderButton onClick={this.handleClick} />
         <ol>{this.state.orderIsAscending ? moveHistoryList : moveHistoryList.reverse()}</ol>
       </div>
     );
