@@ -71,7 +71,7 @@ class GameInfo extends React.Component {
   }
 
   handleClick() {
-    this.setState((prevState, props) => ({
+    this.setState(prevState => ({
       orderIsAscending: !prevState.orderIsAscending,
     }));
   }
