@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function Square(props) {
-  const style = props.squareIsWinner ? {fontWeight: 'bold'} : {};
+const Square = ({ squareIsWinner, onClick, value }) => {
+  const style = squareIsWinner ? {fontWeight: 'bold'} : {};
   return (
-    <button style={style} className="square" onClick={props.onClick}>
-      {props.value}
+    <button style={style} className="square" onClick={onClick}>
+      {value}
     </button>
   );
 }
@@ -56,9 +56,9 @@ class Board extends React.Component {
   }
 }
 
-function OrderButton(props) {
+const OrderButton = ({ onClick }) => {
   return (
-    <button className="orderToggle" onClick={props.onClick}>Toggle list order</button>
+    <button className="orderToggle" onClick={onClick}>Toggle list order</button>
   );
 }
 
